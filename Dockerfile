@@ -1,7 +1,16 @@
-FROM existenz/webstack:7.3
-RUN apk update && apk upgrade
+FROM alpine:latest
+
+WORKDIR /var/www/html/
+
+# Essentials
+RUN echo "UTC" > /etc/timezone
+RUN apk add --no-cache zip unzip curl sqlite nginx supervisor
+
+# Installing bash
 RUN apk add bash
-RUN apk add nginx
+RUN sed -i 's/bin\/ash/bin\/bash/g' /etc/passwd
+
+# Installing PHP
 RUN apk add --no-cache php8 \
     php8-common \
     php8-fpm \
@@ -25,7 +34,37 @@ RUN apk add --no-cache php8 \
     php8-pdo_sqlite \
     php8-tokenizer \
     php8-pecl-redis
-COPY server/etc/nginx /etc/nginx
-COPY server/etc/php /etc/php8
-COPY src /usr/share/nginx/htmlRUN mkdir /var/run/phpEXPOSE 80
-EXPOSE 443STOPSIGNAL SIGTERMCMD ["/bin/bash", "-c", "php-fpm8 && chmod 777 /var/run/php/php8-fpm.sock && chmod 755 /usr/share/nginx/html/* && nginx -g 'daemon off;'"]
+
+# Installing composer
+RUN curl -sS https://getcomposer.org/installer -o composer-setup.php
+RUN php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+RUN rm -rf composer-setup.php
+
+# Configure supervisor
+RUN mkdir -p /etc/supervisor.d/
+COPY .docker/supervisord.ini /etc/supervisor.d/supervisord.ini
+
+# Configure PHP
+RUN mkdir -p /run/php/
+RUN touch /run/php/php8.0-fpm.pid
+
+COPY .docker/php-fpm.conf /etc/php8/php-fpm.conf
+COPY .docker/php.ini-production /etc/php8/php.ini
+
+# Configure nginx
+COPY .docker/nginx.conf /etc/nginx/
+COPY .docker/nginx-laravel.conf /etc/nginx/modules/
+
+RUN mkdir -p /run/nginx/
+RUN touch /run/nginx/nginx.pid
+
+RUN ln -sf /dev/stdout /var/log/nginx/access.log
+RUN ln -sf /dev/stderr /var/log/nginx/error.log
+
+# Building process
+COPY . .
+RUN composer install --no-dev
+RUN chown -R nobody:nobody /var/www/html/storage
+
+EXPOSE 80
+CMD ["supervisord", "-c", "/etc/supervisor.d/supervisord.ini"]
