@@ -80,6 +80,7 @@ jobs:
         pwd
         docker network create labnet
         docker-compose up -d $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker ps -a
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
