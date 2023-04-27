@@ -8,13 +8,7 @@ services:
       - "8081:80"
     networks:
       - internal
-    volumes:
-      - ./data/:/var/www/html/
-      - ./logs/nginx:/var/log/nginx/
   php:
     image: php:fpm-alpine
     networks:
       - internal
-networks:
-  internal:
-    driver: bridge
