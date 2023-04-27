@@ -1,8 +1,5 @@
 # 1 Set master image
-FROM php:7.4-fpm-alpine
-
-# 2 Set working directory
-WORKDIR /var/www/html
+FROM erpeso/alpine-php-webserver:latest
 
 # 3 Install Additional dependencies
 RUN apk update && apk add --no-cache \
@@ -41,9 +38,4 @@ RUN usermod -u 1000 www-data
 # 8 Copy existing application directory permissions
 COPY --chown=www-data:www-data . /var/www/html
 
-# 9 Change current user to www
-USER www-data
 
-# 10 Expose port 9000 and start php-fpm server
-EXPOSE 9000
-CMD ["php-fpm"]
