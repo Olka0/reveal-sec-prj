@@ -63,7 +63,9 @@ jobs:
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
-
+    - name: Login to Docker
+      uses: actions/checkout@v1
+      run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
     - name: Build, tag, and push image to Amazon ECR
       id: build-image
       env:
