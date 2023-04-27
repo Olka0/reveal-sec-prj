@@ -1,70 +1,49 @@
-FROM alpine:latest
+# 1 Set master image
+FROM php:7.4-fpm-alpine
 
-WORKDIR /var/www/html/
+# 2 Set working directory
+WORKDIR /var/www/html
 
-# Essentials
-RUN echo "UTC" > /etc/timezone
-RUN apk add --no-cache zip unzip curl sqlite nginx supervisor
+# 3 Install Additional dependencies
+RUN apk update && apk add --no-cache \
+build-base shadow vim curl \
+php7 \
+php7-fpm \
+php7-common \
+php7-pdo \
+php7-pdo_mysql \
+php7-mysqli \
+php7-mcrypt \
+php7-mbstring \
+php7-xml \
+php7-openssl \
+php7-json \
+php7-phar \
+php7-zip \
+php7-gd \
+php7-dom \
+php7-session \
+php7-zlib
 
-# Installing bash
-RUN apk add bash
-RUN sed -i 's/bin\/ash/bin\/bash/g' /etc/passwd
+# 4 Add and Enable PHP-PDO Extenstions
+RUN docker-php-ext-install pdo pdo_mysql mysqli
+RUN docker-php-ext-enable pdo_mysql
 
-# Installing PHP
-RUN apk add --no-cache php8 \
-    php8-common \
-    php8-fpm \
-    php8-pdo \
-    php8-opcache \
-    php8-zip \
-    php8-phar \
-    php8-iconv \
-    php8-cli \
-    php8-curl \
-    php8-openssl \
-    php8-mbstring \
-    php8-tokenizer \
-    php8-fileinfo \
-    php8-json \
-    php8-xml \
-    php8-xmlwriter \
-    php8-simplexml \
-    php8-dom \
-    php8-pdo_mysql \
-    php8-pdo_sqlite \
-    php8-tokenizer \
-    php8-pecl-redis
+# 5 Install PHP Composer
+#RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Installing composer
-RUN curl -sS https://getcomposer.org/installer -o composer-setup.php
-RUN php composer-setup.php --install-dir=/usr/local/bin --filename=composer
-RUN rm -rf composer-setup.php
+# 6 Remove Cache
+RUN rm -rf /var/cache/apk/*
 
-# Configure supervisor
-RUN mkdir -p /etc/supervisor.d/
-COPY .docker/supervisord.ini /etc/supervisor.d/supervisord.ini
+# 7 Add UID '1000' to www-data
+RUN usermod -u 1000 www-data
 
-# Configure PHP
-RUN mkdir -p /run/php/
-RUN touch /run/php/php8.0-fpm.pid
+# 8 Copy existing application directory permissions
+COPY --chown=www-data:www-data . /var/www/html
 
-COPY .docker/php-fpm.conf /etc/php8/php-fpm.conf
-COPY .docker/php.ini-production /etc/php8/php.ini
+# 9 Change current user to www
+USER www-data
 
-# Configure nginx
-COPY .docker/nginx.conf /etc/nginx/
-COPY .docker/nginx-laravel.conf /etc/nginx/modules/
-
-RUN mkdir -p /run/nginx/
-RUN touch /run/nginx/nginx.pid
-
-RUN ln -sf /dev/stdout /var/log/nginx/access.log
-RUN ln -sf /dev/stderr /var/log/nginx/error.log
-
-# Building process
-COPY . .
-RUN composer install --no-dev
-RUN chown -R nobody:nobody /var/www/html/storage
-
-EXPOSE 80
-CMD ["supervisord", "-c", "/etc/supervisor.d/supervisord.ini"]
+# 10 Expose port 9000 and start php-fpm server
+EXPOSE 9000
+CMD ["php-fpm"]
