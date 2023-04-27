@@ -9,5 +9,4 @@ services:
     network_mode: "bridge"
   php:
     image: php:fpm-alpine
-    networks:
-      - internal
+    network_mode: "bridge"
