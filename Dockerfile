@@ -1,4 +1,5 @@
-FROM alpine:latestRUN apk update && apk upgrade
+FROM alpine:latest
+RUN apk update && apk upgrade
 RUN apk add bash
 RUN apk add nginx
 RUN apk add php8 php8-fpm php8-opcache
