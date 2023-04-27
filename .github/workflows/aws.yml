@@ -32,7 +32,7 @@ on:
 
 env:
   AWS_REGION: us-east-1
-  ECR_REPOSITORY: reveal-sec-prj        
+  ECR_REPOSITORY: github        
   # ECS_SERVICE: MY_ECS_SERVICE                 # set this to your Amazon ECS service name
   ECS_CLUSTER: reveal-sec-prj-cluster
   # ECS_TASK_DEFINITION: MY_ECS_TASK_DEFINITION # set this to the path to your Amazon ECS task definition
