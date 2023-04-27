@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM existenz/webstack:7.3
 RUN apk update && apk upgrade
 RUN apk add bash
 RUN apk add nginx
