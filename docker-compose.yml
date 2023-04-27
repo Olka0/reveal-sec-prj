@@ -6,8 +6,6 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8081:80"
-    networks:
-      - internal
     network_mode: "bridge"
   php:
     image: php:fpm-alpine
