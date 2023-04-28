@@ -82,10 +82,7 @@ jobs:
         docker ps -a
         docker push 771196742746.dkr.ecr.us-east-1.amazonaws.com/reveal-sec-prj_nginx:latest
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
-    - name: Download task definition
-      run: |
-          aws ecs describe-task-definition --task-definition ${{ secrets.ECS_TASK_DEFINITION }} \
-          --query taskDefinition > task-definition.json
+  
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: fargate-task-definition
       uses: aws-actions/amazon-ecs-render-task-definition@v1
