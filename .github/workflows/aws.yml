@@ -83,7 +83,7 @@ jobs:
         docker network create labnet
         docker-compose up -d 
         sudo docker-compose build --no-cache
-        docker tag reveal-sec-prj_nginx:latest 771196742746.dkr.ecr.us-east-1.amazonaws.com/reveal-sec-prj_nginx:latest
+        docker tag reveal-sec-prj-nginx:latest 771196742746.dkr.ecr.us-east-1.amazonaws.com/reveal-sec-prj_nginx:latest
         docker ps -a
         docker push 771196742746.dkr.ecr.us-east-1.amazonaws.com/$ECR_REPOSITORY:latest
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
