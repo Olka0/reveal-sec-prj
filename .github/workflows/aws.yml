@@ -106,7 +106,7 @@ jobs:
       uses: aws-actions/ecs-deploy@v1
       with:
         cluster: $ECS_CLUSTER
-        service: reveal-sec-prj-service
+        #service: reveal-sec-prj-service
         task-definition: fargate-task-definition
         region: $AWS_REGION
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
