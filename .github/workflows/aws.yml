@@ -33,7 +33,6 @@ on:
 env:
   AWS_REGION: us-east-1
   ECR_REPOSITORY: 771196742746.dkr.ecr.us-east-1.amazonaws.com/github       
-  ECS_SERVICE: reveal-sec-prj-cluster
   ECS_CLUSTER: reveal-sec-prj-cluster
   # ECS_TASK_DEFINITION: MY_ECS_TASK_DEFINITION # set this to the path to your Amazon ECS task definition
                                                # file, e.g. .aws/task-definition.json
