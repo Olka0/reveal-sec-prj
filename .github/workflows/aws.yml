@@ -56,12 +56,11 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ env.AWS_REGION }}
-        uses: @2iq/aws-ecr-create-repository@v1
-    - name: Create ECR ptivate
-      id: ecr-repo
-      
+    - name: Create ECR repo if necessary
+      uses: int128/create-ecr-repository-action@v1
+      id: ecr
       with:
-        ecr-name: my-custom-ecr-repo-name
+        ecr-name: $ECR_REPOSITORY
       
     - name: Login to Amazon ECR
       id: login-ecr
