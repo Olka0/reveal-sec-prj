@@ -35,7 +35,7 @@ env:
   ECR_REPOSITORY: reveal-sec-prj_nginx
   ECS_CLUSTER: reveal-sec-prj-cluster
   CONTAINER_NAME: RevealSecPrjNginx
- # ECS_TASK_DEFINITION: 
+  KUBE_NAMESPACE: nprd
 
 permissions:
   contents: read
@@ -102,3 +102,10 @@ jobs:
         task-definition: ${{ steps.fargate-task-definition.outputs.task-definition }}
         cluster: ${{ env.ECS_CLUSTER }}
         wait-for-service-stability: true
+    - name: Deploy to Kubernetes cluster                                                                            
+      uses: kodermax/kubectl-aws-eks@master                                                                         
+      env:                                                                                                          
+        RELEASE_IMAGE: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest
+      with:                                                                                                         
+        args: set image deployment/my-pod app=${{ env.RELEASE_IMAGE }} --record -n $KUBE_NAMESPACE   
+
