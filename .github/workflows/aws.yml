@@ -32,7 +32,7 @@ on:
 
 env:
   AWS_REGION: us-east-1
-  ECR_REPOSITORY: 771196742746.dkr.ecr.us-east-1.amazonaws.com/github       
+  ECR_REPOSITORY: github       
   ECS_CLUSTER: reveal-sec-prj-cluster
   # ECS_TASK_DEFINITION: MY_ECS_TASK_DEFINITION # set this to the path to your Amazon ECS task definition
                                                # file, e.g. .aws/task-definition.json
@@ -78,11 +78,11 @@ jobs:
         # be deployed to ECS.
         pwd
         docker network create labnet
-        docker-compose up -d $ECR_REGISTRY:$IMAGE_TAG .
+        docker-compose up -d $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         sudo docker-compose build --no-cache
         docker ps -a
-        docker push $ECR_REGISTRY:$IMAGE_TAG
-        echo "image=$ECR_REGISTRY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-def
