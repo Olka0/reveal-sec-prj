@@ -33,7 +33,7 @@ on:
 env:
   AWS_REGION: us-east-1
   ECR_REPOSITORY: reveal-sec-prj_nginx
-  ECS_CLUSTER: reveal-sec-prj-cluster
+  EKS_CLUSTER: reveal-sec-prj-cluster
   CONTAINER_NAME: RevealSecPrjNginx
   KUBE_NAMESPACE: nprd
 
@@ -103,11 +103,14 @@ jobs:
         cluster: ${{ env.ECS_CLUSTER }}
         wait-for-service-stability: true
     - name: Create cluster if necessary and Deploy to Kubernetes cluster                                                                            
-      uses: aws-actions/ecs-deploy@v1
+      id: kubectl
+      uses: ianbelcher/eks-kubectl-action@master
       with:
-        cluster: $ECS_CLUSTER
-        #service: reveal-sec-prj-service
-        task-definition: fargate-task-definition
-        region: $AWS_REGION
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          cluster_name: reveal-sec-prj-cluster
+          args: set image --record deployment/pod-name pod-name=${{ steps.build.outputs.IMAGE_URL }}
+      # --- #
+    - name: Use the output
+      run: echo "${{ steps.kubectl.outputs.kubectl-out }}"
