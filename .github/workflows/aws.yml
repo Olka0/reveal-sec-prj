@@ -34,10 +34,8 @@ env:
   AWS_REGION: us-east-1
   ECR_REPOSITORY: github       
   ECS_CLUSTER: reveal-sec-prj-cluster
-  # ECS_TASK_DEFINITION: MY_ECS_TASK_DEFINITION # set this to the path to your Amazon ECS task definition
-                                               # file, e.g. .aws/task-definition.json
-  # CONTAINER_NAME: MY_CONTAINER_NAME           # set this to the name of the container in the
-                                               # containerDefinitions section of your task definition
+  ECS_TASK_DEFINITION: arn:aws:ecs:us-east-1:771196742746:task-definition/fargate-task-definition:1
+  CONTAINER_NAME: reveal-sec-prj_nginx_1
 
 permissions:
   contents: read
