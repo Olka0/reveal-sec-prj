@@ -32,7 +32,7 @@ on:
 
 env:
   AWS_REGION: us-east-1
-  ECR_REPOSITORY: reveal-sec-prj-nginx       
+  ECR_REPOSITORY: reveal   
   ECS_CLUSTER: reveal-sec-prj-cluster
   CONTAINER_NAME: RevealSecPrjNginx
  # ECS_TASK_DEFINITION: 
