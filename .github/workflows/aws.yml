@@ -74,7 +74,7 @@ jobs:
       id: build-image
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        IMAGE_TAG: ${{ env.ECR_REPOSITORY }}:latest
+        IMAGE_TAG: reveal-sec-prj-ngnix:latest
       run: |
         # Build a docker container and
         # push it to ECR so that it can
@@ -85,7 +85,7 @@ jobs:
         sudo docker-compose build --no-cache
         docker tag ${{ IMAGE_TAG }} 771196742746.dkr.ecr.us-east-1.amazonaws.com/${{ env.ECR_REPOSITORY }}:latest
         docker ps -a
-        docker push 771196742746.dkr.ecr.us-east-1.amazonaws.com/$ECR_REPOSITORY:latest
+        docker push 771196742746.dkr.ecr.us-east-1.amazonaws.com/reveal-sec-prj-ngnix:latest
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
   
     - name: Fill in the new image ID in the Amazon ECS task definition
