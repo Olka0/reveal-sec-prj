@@ -59,7 +59,7 @@ jobs:
     - name: Create ECR repo if necessary
       uses: int128/create-ecr-repository-action@v1
       with:
-        repository: hello-world
+        repository: $ECR_REPOSITORY
         public: false
       
     - name: Login to Amazon ECR
