@@ -87,7 +87,7 @@ jobs:
       id: fargate-task-definition
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
-        task-definition: task_definition.json
+        task-definition: arn:aws:ecs:us-east-1:771196742746:task-definition/fargate-task-definition:1
         container-name: ${{ env.CONTAINER_NAME }}
         image: ${{ steps.build-image.outputs.image }}
 
