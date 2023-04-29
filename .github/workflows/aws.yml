@@ -62,7 +62,13 @@ jobs:
       with:
         repository: ${{ env.ECR_REPOSITORY }}
         public: false
-      
+    - name: Create cluster if necessary
+      run: |
+        curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+        sudo mv /tmp/eksctl /usr/local/bin
+        eksctl version
+        ekstl create cluster --name reveal-sec-prj-cluster-test --region us-east-1 --nodegroup-name test-nodes --node-type t2.micro --nodes 2
+        
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
@@ -103,12 +109,7 @@ jobs:
         task-definition: ${{ steps.fargate-task-definition.outputs.task-definition }}
         cluster: ${{ env.ECS_CLUSTER }}
         wait-for-service-stability: true
-    - name: Create cluster if necessary
-      run: |
-        curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
-        sudo mv /tmp/eksctl /usr/local/bin
-        eksctl version
-        ekstl create cluster --name reveal-sec-prj-cluster-test --region us-east-1 --nodegroup-name test-nodes --node-type t2.micro --nodes 2
+    
     - name: Deploy to Kubernetes cluster                                                                            
       uses: kodermax/kubectl-aws-eks@master
       env:
