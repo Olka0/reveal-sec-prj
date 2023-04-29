@@ -71,7 +71,7 @@ jobs:
         aws eks describe-cluster --name ${{ env.EKS_CLUSTER }}
         
     - name: Create cluster if necessary
-      if: ${{ always() && contains(join(needs.*.result, ','), 'failure') }}
+      if: ${{ always() && contains(join(needs.*.result, ','), 'ResourceNotFoundException') }}
       run: |
         eksctl version
         which aws
