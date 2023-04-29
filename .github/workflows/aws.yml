@@ -33,7 +33,7 @@ on:
 env:
   AWS_REGION: us-east-1
   ECR_REPOSITORY: reveal-sec-prj_nginx
-  EKS_CLUSTER: reveal-sec-prj-cluster
+  EKS_CLUSTER: reveal-sec-prj-test
   CONTAINER_NAME: RevealSecPrjNginx
   KUBE_NAMESPACE: nprd
 
@@ -76,7 +76,10 @@ jobs:
         eksctl version
         which aws
         eksctl create cluster --name ${{ env.EKS_CLUSTER }} --region us-east-1 --zones=us-east-1a,us-east-1d --nodegroup-name test-nodes --node-type t2.micro --nodes 2
-        
+    - name: Clean Up stack if create failed
+      if: failure()
+      run: |
+        ekstl delete cluster --name ${{ env.EKS_CLUSTER }}
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
