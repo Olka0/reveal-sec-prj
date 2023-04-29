@@ -62,16 +62,22 @@ jobs:
       with:
         repository: ${{ env.ECR_REPOSITORY }}
         public: false
-        
-    - name: Create cluster if necessary
+    - name: Check if cluster exist
       run: |
         curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
         sudo mv /tmp/eksctl /usr/bin
+        aws eks describe-cluster --name ${{ env.EKS_CLUSTER }}
+
+        
+    - name: Create cluster if necessary
+      if: ${{ always() && contains(join(needs.*.result, ','), 'failure') }}
+      run: |
         eksctl version
         which aws
-        eksctl create cluster --name reveal-sec-prj-cluster-test --region us-east-1 --zones=us-east-1a,us-east-1d --nodegroup-name test-nodes --node-type t2.micro --nodes 2
+        eksctl create cluster --name ${{ env.EKS_CLUSTER }} --region us-east-1 --zones=us-east-1a,us-east-1d --nodegroup-name test-nodes --node-type t2.micro --nodes 2
         
     - name: Login to Amazon ECR
+      if: ${{ always() && contains(join(needs.*.result, ','), 'success') }}
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
     - name: Login to Docker Hub
@@ -80,6 +86,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
     - name: Build, tag, and push image to Amazon ECR
+      if: ${{ always() && contains(join(needs.*.result, ','), 'success') }}
       id: build-image
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
