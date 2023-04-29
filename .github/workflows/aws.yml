@@ -57,17 +57,18 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ env.AWS_REGION }}
+        
     - name: Create ECR repo if necessary
       uses: int128/create-ecr-repository-action@v1
       with:
         repository: ${{ env.ECR_REPOSITORY }}
         public: false
+        
     - name: Check if cluster exist
       run: |
         curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
         sudo mv /tmp/eksctl /usr/bin
         aws eks describe-cluster --name ${{ env.EKS_CLUSTER }}
-
         
     - name: Create cluster if necessary
       if: ${{ always() && contains(join(needs.*.result, ','), 'failure') }}
@@ -77,7 +78,7 @@ jobs:
         eksctl create cluster --name ${{ env.EKS_CLUSTER }} --region us-east-1 --zones=us-east-1a,us-east-1d --nodegroup-name test-nodes --node-type t2.micro --nodes 2
         
     - name: Login to Amazon ECR
-      if: ${{ always() && contains(join(needs.*.result, ','), 'success') }}
+      if: ${{ always() && contains(join(needs.*.result, ','), 'failure') }}
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
     - name: Login to Docker Hub
@@ -85,8 +86,8 @@ jobs:
       with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
+          
     - name: Build, tag, and push image to Amazon ECR
-      if: ${{ always() && contains(join(needs.*.result, ','), 'success') }}
       id: build-image
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
