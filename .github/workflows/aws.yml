@@ -71,7 +71,7 @@ jobs:
         aws eks describe-cluster --name ${{ env.EKS_CLUSTER }}
         
     - name: Create cluster if necessary
-      if: success() || failure()
+      if: failure()
       run: |
         eksctl version
         which aws
