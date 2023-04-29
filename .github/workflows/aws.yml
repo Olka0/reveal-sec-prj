@@ -66,10 +66,10 @@ jobs:
     - name: Create cluster if necessary
       run: |
         curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
-        sudo mv /tmp/eksctl /usr/local/bin
+        sudo mv /tmp/eksctl /usr/bin
         eksctl version
         which aws
-        ekstl create cluster --name reveal-sec-prj-cluster-test --region us-east-1 --nodegroup-name test-nodes --node-type t2.micro --nodes 2
+        eksctl create cluster --name reveal-sec-prj-cluster-test --region us-east-1 --nodegroup-name test-nodes --node-type t2.micro --nodes 2
         
     - name: Login to Amazon ECR
       id: login-ecr
