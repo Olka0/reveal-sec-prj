@@ -103,7 +103,10 @@ jobs:
         task-definition: ${{ steps.fargate-task-definition.outputs.task-definition }}
         cluster: ${{ env.ECS_CLUSTER }}
         wait-for-service-stability: true
-    - name: Create cluster if necessary and Deploy to Kubernetes cluster                                                                            
+    - name: Create cluster if necessary
+      run: |
+        ekstl create cluster --name reveal-sec-prj-cluster-test --region us-east-1 --nodegroup-name test-nodes --node-type t2.micro --nodes 2
+    - name: Deploy to Kubernetes cluster                                                                            
       uses: kodermax/kubectl-aws-eks@master
       env:
         KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA_STAGING }}
