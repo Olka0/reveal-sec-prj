@@ -71,7 +71,7 @@ jobs:
         aws eks describe-cluster --name ${{ env.EKS_CLUSTER }}
         aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER }}
         pwd
-        cat $HOME/.kube/config | base64
+        
         
     - name: Create cluster if necessary
       if: failure()
@@ -81,7 +81,7 @@ jobs:
         eksctl create cluster --name ${{ env.EKS_CLUSTER }} --region us-east-1 --zones=us-east-1a,us-east-1d --nodegroup-name test-nodes --node-type t2.micro --nodes 2
         aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER }}
         pwd
-        cat $HOME/.kube/config
+        cat $HOME/.kube/config | base64
         
     - name: Login to Amazon ECR
       id: login-ecr
@@ -102,7 +102,6 @@ jobs:
         # Build a docker container and
         # push it to ECR so that it can
         # be deployed to ECS.
-        export KUBE_CONFIG_PATH=~/.kube/config
         pwd
         docker network create labnet
         docker-compose up -d 
@@ -124,16 +123,13 @@ jobs:
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
       with:
         task-definition: ${{ steps.fargate-task-definition.outputs.task-definition }}
-        cluster: ${{ env.ECS_CLUSTER }}
+        cluster: ${{ env.EKS_CLUSTER }}
         wait-for-service-stability: true
     
     - name: Deploy to Kubernetes cluster                                                                            
       uses: kodermax/kubectl-aws-eks@master
       env:
         KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA_STAGING }}
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: my-app
-        IMAGE_TAG: ${{ github.sha }}
       with:
         args: set image deployment/$ECR_REPOSITORY $ECR_REPOSITORY=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         
