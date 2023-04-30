@@ -33,7 +33,7 @@ on:
 env:
   AWS_REGION: us-east-1
   ECR_REPOSITORY: reveal-sec-prj_nginx
-  EKS_CLUSTER: reveal-sec-prj-test1
+  EKS_CLUSTER: reveal-sec-prj-test
   CONTAINER_NAME: RevealSecPrjNginx
   KUBE_NAMESPACE: nprd
 
