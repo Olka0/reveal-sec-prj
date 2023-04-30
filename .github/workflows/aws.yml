@@ -134,6 +134,7 @@ jobs:
     - name: verify deployment
       run: |
         kubectl get deployment
-        kubectl get pods
+        kubectl get pod
+        kubectl describe pod reveal-sec-prj-76f6f47748-4fxdb
         
       
