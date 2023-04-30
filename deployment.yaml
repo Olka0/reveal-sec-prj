@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: reveal-sec-prj
+  name: reveal-sec-prj-test
   namespace: default
 spec:
   replicas: 2
