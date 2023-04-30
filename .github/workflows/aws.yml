@@ -134,5 +134,6 @@ jobs:
     - name: verify deployment
       run: |
         kubectl get deployment
+        kubectl get pods
         
       
