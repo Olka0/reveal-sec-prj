@@ -70,6 +70,7 @@ jobs:
         sudo mv /tmp/eksctl /usr/bin
         aws eks describe-cluster --name ${{ env.EKS_CLUSTER }}
         aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER }}
+        pwd
         cat $HOME/.kube/config | base64
         
     - name: Create cluster if necessary
