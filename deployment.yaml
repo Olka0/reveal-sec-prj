@@ -15,6 +15,6 @@ spec:
     spec:
       containers:
         - name: back-end
-          image: <ACCOUNTID>.dkr.ecr.us-east-1.amazonaws.com/reveal-sec-prj_nginx:latest
+          image: 771196742746.dkr.ecr.us-east-1.amazonaws.com/reveal-sec-prj_nginx:latest
           ports:
             - containerPort: 80
