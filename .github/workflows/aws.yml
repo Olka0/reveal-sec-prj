@@ -128,10 +128,11 @@ jobs:
     
     - name: Deploy to Kubernetes cluster                                                                            
       uses: kodermax/kubectl-aws-eks@master
-      env:
-        KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA_STAGING }}
-      with:
-        args: set image deployment/$ECR_REPOSITORY $ECR_REPOSITORY=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+      env:                                                                                                          
+       RELEASE_IMAGE: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.RELEASE_REVISION }}
+      with:                                                                                                         
+       args: set image deployment/my-pod app=${{ env.RELEASE_IMAGE }} --record -n $KUBE_NAMESPACE   
+
         
     - name: verify deployment
       uses: kodermax/kubectl-aws-eks@master
