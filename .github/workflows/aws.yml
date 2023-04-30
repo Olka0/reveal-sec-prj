@@ -79,11 +79,9 @@ jobs:
         eksctl version
         which aws
         eksctl create cluster --name ${{ env.EKS_CLUSTER }} --region us-east-1 --zones=us-east-1a,us-east-1d --nodegroup-name test-nodes --node-type t2.micro --nodes 2
-   
-    - name: Clean Up stack if create failed
-      if: failure()
-      run: |
-        eksctl delete cluster --name ${{ env.EKS_CLUSTER }}
+        aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER }}
+        pwd
+        cat $HOME/.kube/config | base64
         
     - name: Login to Amazon ECR
       id: login-ecr
