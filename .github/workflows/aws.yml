@@ -81,7 +81,7 @@ jobs:
         eksctl create cluster --name ${{ env.EKS_CLUSTER }} --region us-east-1 --zones=us-east-1a,us-east-1d --nodegroup-name test-nodes --node-type t2.micro --nodes 2
         aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER }}
         pwd
-        cat $HOME/.kube/config | base64
+        cat $HOME/.kube/config
         
     - name: Login to Amazon ECR
       id: login-ecr
@@ -102,6 +102,7 @@ jobs:
         # Build a docker container and
         # push it to ECR so that it can
         # be deployed to ECS.
+        export KUBE_CONFIG_PATH=~/.kube/config
         pwd
         docker network create labnet
         docker-compose up -d 
