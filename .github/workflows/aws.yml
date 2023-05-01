@@ -96,7 +96,7 @@ jobs:
       id: build-image
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        IMAGE_TAG: reveal-sec-prj_nginx:latest
+        IMAGE_TAG: latest
         ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
       run: |
         # Build a docker container and
@@ -106,7 +106,7 @@ jobs:
         docker network create labnet
         docker-compose up -d 
         sudo docker-compose build --no-cache
-        docker tag  reveal-sec-prj_nginx:latest 771196742746.dkr.ecr.us-east-1.amazonaws.com/${{ env.ECR_REPOSITORY }}:latest
+        docker tag  reveal-sec-prj_nginx:latest $ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/${{ env.ECR_REPOSITORY }}:latest
         docker ps -a
         docker push $ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
