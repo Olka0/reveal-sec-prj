@@ -135,7 +135,7 @@ jobs:
       run: |
         kubectl get deployment
         kubectl describe node
-        kubectl get po -A
+        kubectl get pods -l app=disk-checker
         
         
       
