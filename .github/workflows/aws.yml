@@ -32,8 +32,8 @@ on:
 
 env:
   AWS_REGION: us-east-1
-  ECR_REPOSITORY: reveal-sec-prj_nginx
-  EKS_CLUSTER: reveal-sec-prj-test
+  ECR_REPOSITORY: reveal-sec-prj
+  EKS_CLUSTER: reveal-sec-prj
   CONTAINER_NAME: RevealSecPrjNginx
   KUBE_NAMESPACE: nprd
 
@@ -68,7 +68,6 @@ jobs:
       run: |
         curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
         sudo mv /tmp/eksctl /usr/bin
-        aws eks describe-cluster --name ${{ env.EKS_CLUSTER }}
         aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER }}
         pwd
         
